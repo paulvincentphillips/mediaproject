@@ -1,0 +1,78 @@
+<!--
+Alphabet Guide for Kids - Media assignment project, 2017
+Authors: Ellen Cunningham, Paul Vincents Phillips, Conor Brady, Patrick Flynn
+-->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Media Project</title>
+    <script type="text/javascript" src="paper-full.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"> </script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.0.3/howler.js"></script>
+    <link rel="stylesheet" type="text/css" href="index.css">
+
+    <script type="text/paperscript" canvas="myCanvas">    
+
+      //create an array to store all the images, we can later use this to apply certain changes to all images
+      var images = [];
+
+      //do something when you press a key
+      function onKeyDown(event) {
+
+        //get the image element in the html, change the image source and the image ID to be the event key
+        // e.g. if 'a' is pressed the src becomes /images/a.png, and if becomes id='a'
+        var imageElement = document.getElementsByName('img');
+        console.log(imageElement.src);
+        imageElement.src = 'images/' + event.key + '.png';  
+        imageElement.id = event.key;  
+        console.log(imageElement.src);
+        
+        //make a new raster image, put it at the random point
+        //do the same as before, but with an images array
+        displayImage(event.key);
+        playSound(event.key);
+      }
+
+      //display the correct image function
+      function displayImage(letter) {
+        //random points generated
+        var maxPoint = new Point(view.size.width, view.size.height);
+
+        //generate random point on the canvas
+        var randomPoint = Point.random();
+        var point = maxPoint * randomPoint;
+
+        //make a new raster image by making a raster object and then providing it a source which is
+        // the keystroke passed in as 'letter'. Then push the image to the images array
+        var raster = new Raster();
+        raster.source = 'images/' + letter + '.png'
+        raster.position = point;
+        images.push(raster);
+      }
+
+      //play a sound function
+      //take the keyevent passed in and then play the corresponding sound
+      // e.g, 'a' is passed in, then play 'a.mp3' etc
+      function playSound(letter) {
+        var sound = new Howl({
+          src: ['sounds/' + letter + '.mp3']
+        });
+
+        //play the sound
+        sound.play();
+      }
+
+      //loop though the images array and make any changes you want to each image that has been pushed to the array
+      function onFrame(event) {
+        for(var i=0; i<images.length; i++) {
+          images[i].scale(.933); //make the image fade away and eventually totally disappear 
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <img src="" id="" hidden>
+    <canvas id="myCanvas" resize></canvas>
+  </body>
+</html>
